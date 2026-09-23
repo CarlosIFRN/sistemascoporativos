@@ -1,8 +1,4 @@
 package br.edu.ifrn.user.dto;
 
-public record UserRequestDTO(
-        Long id;
-        String titulo;
-
-) {
+public record UserResponseDTO(Long id, String nome, String email, String cargo) {
 }

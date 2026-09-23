@@ -1,25 +1,37 @@
 package br.edu.ifrn.user.repository;
-import br.edu.ifrn.labtarefas.model.Tarefa;
+
+import br.edu.ifrn.user.model.User;
 import org.springframework.stereotype.Repository;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Repository
 public class UserRepository {
-    private final Map<Long, User> banco = new LinkedHashMap<>();
-    public User salvar(String titulo) {
-        System.out.println("[REPOSITORY] Salvando tarefa em memória: " +
-                titulo);
-        Long id = sequencia.incrementAndGet();
-        Tarefa tarefa = new Tarefa(id, titulo, false);
-        banco.put(id, tarefa);
-        return tarefa;
+    private final Map<Long, User> usuarios = new HashMap<>();
+    private final AtomicLong sequence = new AtomicLong(1);
+
+    public User save(User user) {
+        if (user.getId() == null) {
+            user.setId(sequence.getAndIncrement());
+        }
+        usuarios.put(user.getId(), user);
+        return user;
     }
-    public List<Tarefa> listarTodas() {
-        System.out.println("[REPOSITORY] Buscando todas as tarefas em memória");
-        return new ArrayList<>(banco.values());
+
+    public List<User> findAll() {
+        return new ArrayList<>(usuarios.values());
     }
-    public Optional<Tarefa> buscarPorId(Long id) {
-        System.out.println("[REPOSITORY] Buscando tarefa por id: " + id);
-        return Optional.ofNullable(banco.get(id));
+
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(usuarios.get(id));
+    }
+
+    public boolean deleteById(Long id) {
+        return usuarios.remove(id) != null;
+    }
+
+    public boolean existsById(Long id) {
+        return usuarios.containsKey(id);
     }
 }
